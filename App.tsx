@@ -72,7 +72,7 @@ const products: Product[] = [
     quantity: 1,
   },
 
-  // Add more products as needed
+  
 ];
 
 const App: React.FC = () => {
@@ -95,14 +95,14 @@ const App: React.FC = () => {
     const existingProduct = cart.find((p) => p.id === product.id);
 
     if (existingProduct) {
-      // If the product is already in the cart, update the quantity
+      
       setCart((prevCart) =>
         prevCart.map((p) =>
           p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
         )
       );
     } else {
-      // If the product is not in the cart, add it with quantity 1
+     
       setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
     }
 
