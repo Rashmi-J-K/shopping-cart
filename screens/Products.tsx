@@ -12,15 +12,10 @@ import {
   FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Product } from './ShoppingCart';
+import { Product } from './types';
 
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  price: number;
-  quantity: number;
+interface ProductsProps {
+  navigation: any;
 }
 
 const styles = StyleSheet.create({
@@ -116,61 +111,60 @@ const styles = StyleSheet.create({
 });
 
 const products: Product[] = [
-    {
-        id: 1,
-        name: 'Product1',
-        description: 'Description of Product 1',
-        image: 'https://tse4.mm.bing.net/th?id=OIP.a0HGVmwS1CoY3YBFqpcQJQHaE8&pid=Api&P=0&h=220',
-        price: 20.99,
-        quantity: 1,
-    },
-    {
-        id: 2,
-        name: 'Product2',
-        description: 'Description of Product 2',
-        image: 'https://tse3.mm.bing.net/th?id=OIP.qervQhFDZGWPMGtW8phx9wHaE8&pid=Api&P=0&h=220',
-        price: 30.49,
-        quantity: 1,
-    },
-    {
-        id: 3,
-        name: 'Product3',
-        description: 'Description of Product 3',
-        image: 'https://tse3.mm.bing.net/th?id=OIP.FH6iyTAw3ZPg7Pv5cGxj_AHaE8&pid=Api&P=0&h=220',
-        price: 15.99,
-        quantity: 1,
-    },
-    {
-        id: 4,
-        name: 'Product4',
-        description: 'Description of Product 4',
-        image: 'https://tse3.mm.bing.net/th?id=OIP.9w6oNcvn4y8qpqBIWBQk0QHaE8&pid=Api&P=0&h=220',
-        price: 25.99,
-        quantity: 1,
-    },
-    {
-        id: 5,
-        name: 'Product5',
-        description: 'Description of Product 5',
-        image: 'https://tse2.mm.bing.net/th?id=OIP.H7euLSy8SxmRKSOCI9sgnAHaEo&pid=Api&P=0&h=220',
-        price: 25.99,
-        quantity: 1,
-    },
-    {
-        id: 6,
-        name: 'Product6',
-        description: 'Description of Product 6',
-        image: 'https://tse3.mm.bing.net/th?id=OIP.9w6oNcvn4y8qpqBIWBQk0QHaE8&pid=Api&P=0&h=220',
-        price: 25.99,
-        quantity: 1,
-    },
+  // Product data remains unchanged
+  {
+    id: 1,
+    name: 'Product1',
+    description: 'Description of Product 1',
+    image: 'https://tse4.mm.bing.net/th?id=OIP.a0HGVmwS1CoY3YBFqpcQJQHaE8&pid=Api&P=0&h=220',
+    price: 20.99,
+    quantity: 1,
+},
+{
+    id: 2,
+    name: 'Product2',
+    description: 'Description of Product 2',
+    image: 'https://tse3.mm.bing.net/th?id=OIP.qervQhFDZGWPMGtW8phx9wHaE8&pid=Api&P=0&h=220',
+    price: 30.49,
+    quantity: 1,
+},
+{
+    id: 3,
+    name: 'Product3',
+    description: 'Description of Product 3',
+    image: 'https://tse3.mm.bing.net/th?id=OIP.FH6iyTAw3ZPg7Pv5cGxj_AHaE8&pid=Api&P=0&h=220',
+    price: 15.99,
+    quantity: 1,
+},
+{
+    id: 4,
+    name: 'Product4',
+    description: 'Description of Product 4',
+    image: 'https://tse3.mm.bing.net/th?id=OIP.9w6oNcvn4y8qpqBIWBQk0QHaE8&pid=Api&P=0&h=220',
+    price: 25.99,
+    quantity: 1,
+},
+{
+    id: 5,
+    name: 'Product5',
+    description: 'Description of Product 5',
+    image: 'https://tse2.mm.bing.net/th?id=OIP.H7euLSy8SxmRKSOCI9sgnAHaEo&pid=Api&P=0&h=220',
+    price: 25.99,
+    quantity: 1,
+},
+{
+    id: 6,
+    name: 'Product6',
+    description: 'Description of Product 6',
+    image: 'https://tse3.mm.bing.net/th?id=OIP.9w6oNcvn4y8qpqBIWBQk0QHaE8&pid=Api&P=0&h=220',
+    price: 25.99,
+    quantity: 1,
+},
+];
 
-]
-const Products: React.FC = () => {
-  const navigation = useNavigation();
+const Products: React.FC<ProductsProps> = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<Product[]>([]);
 
   const handleSearch = () => {
     const results = products.filter((product) =>
@@ -181,51 +175,6 @@ const Products: React.FC = () => {
 
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product);
-  };
-
-  const handleAddToCart = (product: Product) => {
-    const existingProduct = cart.find((p) => p.id === product.id);
-
-    if (existingProduct) {
-      setCart((prevCart) =>
-        prevCart.map((p) =>
-          p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
-        )
-      );
-    } else {
-      setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
-    }
-
-    setSelectedProduct(null);
-
-    // Navigate to ShoppingCart
-    navigation.navigate('ShoppingCart');
-  };
-
-  const handleDeleteFromCart = (productId: number) => {
-    setCart((prevCart) => prevCart.filter((product) => product.id !== productId));
-  };
-
-  const handleIncreaseQuantity = (productId: number) => {
-    setCart((prevCart) =>
-      prevCart.map((product) =>
-        product.id === productId ? { ...product, quantity: product.quantity + 1 } : product
-      )
-    );
-  };
-
-  const handleDecreaseQuantity = (productId: number) => {
-    setCart((prevCart) =>
-      prevCart.map((product) =>
-        product.id === productId && product.quantity > 1
-          ? { ...product, quantity: product.quantity - 1 }
-          : product
-      )
-    );
-  };
-
-  const calculateTotalPrice = () => {
-    return cart.reduce((total, product) => total + product.price * product.quantity, 0).toFixed(2);
   };
 
   return (
@@ -251,7 +200,7 @@ const Products: React.FC = () => {
               <Text style={styles.productName}>{item.name}</Text>
               <Text style={styles.productDescription}>{item.description}</Text>
               <Text style={styles.productPrice}>Price: ${item.price.toFixed(2)}</Text>
-              <Button title="Add to Cart" onPress={() => handleAddToCart(item)} />
+              <Button title="Add to Cart" onPress={() => navigation.navigate('ShoppingCart', { product: item })} />
             </TouchableOpacity>
           )}
           horizontal
@@ -266,40 +215,10 @@ const Products: React.FC = () => {
             <Text style={styles.productName}>{selectedProduct.name}</Text>
             <Text style={styles.productDescription}>{selectedProduct.description}</Text>
             <Text style={styles.productPrice}>Price: ${selectedProduct.price.toFixed(2)}</Text>
-            <Button title="Add to Cart" onPress={() => handleAddToCart(selectedProduct)} />
           </>
         ) : (
           <Text>No product selected</Text>
         )}
-      </View>
-
-      <View style={styles.cartContainer}>
-        <Text style={styles.cartTitle}>Shopping Cart</Text>
-        {cart.map((cartProduct) => (
-          <View key={cartProduct.id} style={styles.cartProductItem}>
-            <Image source={{ uri: cartProduct.image }} style={styles.cartProductImage} />
-            <Text style={styles.productName}>{cartProduct.name}</Text>
-            <Text style={styles.productDescription}>{cartProduct.description}</Text>
-            <Text style={styles.productPrice}>Price: ${cartProduct.price.toFixed(2)}</Text>
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={() => handleDecreaseQuantity(cartProduct.id)}
-              >
-                <Text>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.quantityText}>{cartProduct.quantity}</Text>
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={() => handleIncreaseQuantity(cartProduct.id)}
-              >
-                <Text>+</Text>
-              </TouchableOpacity>
-            </View>
-            <Button title="Delete" onPress={() => handleDeleteFromCart(cartProduct.id)} />
-          </View>
-        ))}
-        <Text style={styles.cartTotal}>Total Price: ${calculateTotalPrice()}</Text>
       </View>
     </View>
   );
